@@ -6,6 +6,8 @@ import { ProductService } from 'src/app/demo/service/product.service';
 import {ContinentModel} from "../../../model/continent.model";
 import {ContinentsService} from "../../../service/continents.service";
 import {ConvictionsService} from "../../../service/convictions.service";
+import {CountryModel} from "../../../model/country.model";
+import {Router} from "@angular/router";
 
 @Component({
     templateUrl: './convictions.component.html',
@@ -19,7 +21,7 @@ export class ConvictionsComponent implements OnInit {
 
     cols: any[] = [];
 
-    constructor(private  convictionService: ConvictionsService, private messageService: MessageService) { }
+    constructor(private  convictionService: ConvictionsService, private messageService: MessageService, private router: Router) { }
 
     ngOnInit() {
 
@@ -41,5 +43,9 @@ export class ConvictionsComponent implements OnInit {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
     }
 
+    showNodeGhaph(conviction: ContinentModel){
+        // console.log(student.matricule)
+        this.router.navigate(['graph/node/', conviction.id])
+    }
 
 }

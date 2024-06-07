@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { KillersRoutingModule } from './killers-routing.module';
-import { KillersComponent } from './killers.component';
+import { GraphRoutingModule } from './graph-routing.module';
+import { GraphComponent } from './graph.component';
 import { TableModule } from 'primeng/table';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -16,16 +16,11 @@ import { DropdownModule } from 'primeng/dropdown';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DialogModule } from 'primeng/dialog';
-import {NetworkComponent} from "./network/network.component";
-import {AutoCompleteModule} from "primeng/autocomplete";
-import {CalendarModule} from "primeng/calendar";
-import {ChipsModule} from "primeng/chips";
-import {MultiSelectModule} from "primeng/multiselect";
 
 @NgModule({
     imports: [
         CommonModule,
-        KillersRoutingModule,
+        GraphRoutingModule,
         TableModule,
         FileUploadModule,
         FormsModule,
@@ -40,12 +35,8 @@ import {MultiSelectModule} from "primeng/multiselect";
         RadioButtonModule,
         InputNumberModule,
         DialogModule,
-        NetworkComponent,
-        AutoCompleteModule,
-        CalendarModule,
-        ChipsModule,
-        MultiSelectModule
+        GraphComponent
     ],
-    declarations: [KillersComponent]
+    declarations: []
 })
-export class KillersModule { }
+export class GraphModule { }

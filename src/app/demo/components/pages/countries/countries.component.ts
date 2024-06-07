@@ -7,6 +7,8 @@ import {ContinentModel} from "../../../model/continent.model";
 import {ContinentsService} from "../../../service/continents.service";
 import {CountryModel} from "../../../model/country.model";
 import {CountryService} from "../../../service/country.service";
+import {Router} from "@angular/router";
+import {Country} from "../../../api/customer";
 
 @Component({
     templateUrl: './countries.component.html',
@@ -20,7 +22,7 @@ export class CountriesComponent implements OnInit {
 
     cols: any[] = [];
 
-    constructor(private  countryService: CountryService, private messageService: MessageService) { }
+    constructor(private  countryService: CountryService, private messageService: MessageService, private router: Router) { }
 
     ngOnInit() {
 
@@ -44,5 +46,10 @@ export class CountriesComponent implements OnInit {
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+
+    showNodeGhaph(country: CountryModel){
+        // console.log(student.matricule)
+        this.router.navigate(['graph/node/', country.id])
     }
 }

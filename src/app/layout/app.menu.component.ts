@@ -23,37 +23,42 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'KILLERS MANAGES',
                 items: [
-                    { label: 'Serials killers', icon: 'pi pi-fw pi-home', routerLink: ['/killers'] },
-                    { label: 'Serials graph', icon: 'pi pi-fw pi-home', routerLink: ['/killers-graph'] },
-                    { label: 'Full graph', icon: 'pi pi-fw pi-home', routerLink: ['/killers-full-graph'] }
+                    { label: 'Serials killers', icon: 'pi pi-user-plus', routerLink: ['/killers'] },
+                    { label: 'Serials graph', icon: 'pi pi-share-alt', routerLink: ['/graph/killers'] },
                 ]
             },
             {
                 label: 'VICTIMS',
                 items: [
-                    { label: 'Victims list', icon: 'pi pi-fw pi-home', routerLink: ['/victims'] },
-                    { label: 'Victims graph', icon: 'pi pi-fw pi-home', routerLink: ['/victims-graph'] }
+                    { label: 'Victims list', icon: 'pi pi-user-minus', routerLink: ['/victims'] },
+                    { label: 'Victims graph', icon: 'pi pi-share-alt', routerLink: ['/graph/victims'] }
                 ]
             },
             {
                 label: 'CONVICTIONS',
                 items: [
-                    { label: 'Convictions list', icon: 'pi pi-fw pi-home', routerLink: ['/convictions'] },
-                    { label: 'Convictions graph', icon: 'pi pi-fw pi-home', routerLink: ['/Convictions-graph'] }
+                    { label: 'Convictions list', icon: 'pi pi-lock', routerLink: ['/convictions'] },
+                    { label: 'Convictions graph', icon: 'pi pi-share-alt', routerLink: ['/graph/convictions'] }
                 ]
             },
             {
                 label: 'COUNTRIES',
                 items: [
-                    { label: 'Countries list', icon: 'pi pi-fw pi-home', routerLink: ['/countries'] },
-                    { label: 'Countries graph', icon: 'pi pi-fw pi-home', routerLink: ['/Countries-graph'] }
+                    { label: 'Countries list', icon: 'pi pi-flag-fill', routerLink: ['/countries'] },
+                    { label: 'Countries graph', icon: 'pi pi-share-alt', routerLink: ['/graph/countries'] }
                 ]
             },
             {
                 label: 'CONTINENTS',
                 items: [
-                    { label: 'Continents list', icon: 'pi pi-fw pi-home', routerLink: ['/continents'] },
-                    { label: 'Continents graph', icon: 'pi pi-fw pi-home', routerLink: ['/continents-graph'] }
+                    { label: 'Continents list', icon: 'pi pi-globe', routerLink: ['/continents'] },
+                    { label: 'Continents graph', icon: 'pi pi-share-alt', routerLink: ['/graph/continents'] }
+                ]
+            },
+            {
+                label: 'GRAPH',
+                items: [
+                    { label: 'Full Database graph', icon: 'pi pi-share-alt', routerLink: ['/graph/complete'] }
                 ]
             },
             // {

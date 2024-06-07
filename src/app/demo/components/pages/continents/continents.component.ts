@@ -5,6 +5,8 @@ import { Table } from 'primeng/table';
 import { ProductService } from 'src/app/demo/service/product.service';
 import {ContinentModel} from "../../../model/continent.model";
 import {ContinentsService} from "../../../service/continents.service";
+import {CountryModel} from "../../../model/country.model";
+import {Router} from "@angular/router";
 
 @Component({
     templateUrl: './continents.component.html',
@@ -18,7 +20,7 @@ export class ContinentsComponent implements OnInit {
 
     cols: any[] = [];
 
-    constructor(private  continentService: ContinentsService, private messageService: MessageService) { }
+    constructor(private  continentService: ContinentsService, private messageService: MessageService, private router: Router) { }
 
     ngOnInit() {
 
@@ -39,5 +41,10 @@ export class ContinentsComponent implements OnInit {
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+
+    showNodeGhaph(continent: ContinentModel){
+        // console.log(student.matricule)
+        this.router.navigate(['graph/node/', continent.id])
     }
 }

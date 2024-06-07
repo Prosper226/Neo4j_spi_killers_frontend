@@ -1,141 +1,227 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/demo/api/product';
-import { MessageService } from 'primeng/api';
+import {ConfirmationService, MessageService, SelectItem} from 'primeng/api';
 import { Table } from 'primeng/table';
 import { ProductService } from 'src/app/demo/service/product.service';
+import {Router} from "@angular/router";
+import {KillersService} from "../../../service/killers.service";
+import {ContinentModel} from "../../../model/continent.model";
+import {KillerModel} from "../../../model/killer.model";
+import {CountryService} from "../../../service/country.service";
+import {CountryModel} from "../../../model/country.model";
+import {ConvictionModel} from "../../../model/conviction.model";
+import {ConvictionsService} from "../../../service/convictions.service";
+import {forkJoin} from "rxjs";
 
 @Component({
     templateUrl: './victims.component.html',
-    providers: [MessageService]
+    providers: [MessageService, KillersService, CountryService, ConvictionsService]
 })
 export class VictimsComponent implements OnInit {
 
-    productDialog: boolean = false;
+    formDialog: boolean = false;        // modal pour ajouter ou modifier un objet
+    deleteDialog: boolean = false;      // modal pour confirmer la supprimer
 
-    deleteProductDialog: boolean = false;
-
-    deleteProductsDialog: boolean = false;
 
     products: Product[] = [];
-
     product: Product = {};
 
-    selectedProducts: Product[] = [];
+
+    killer: KillerModel = {};           // objet
+    killersList: KillerModel[] = []     // listes d'objets
+
+    countriesList: CountryModel[] = []
+    convictionsList: ConvictionModel[] = []
 
     submitted: boolean = false;
 
-    cols: any[] = [];
 
-    statuses: any[] = [];
+    cities: SelectItem[] = [];
+    selectedDrop: SelectItem = { value: '' };
+    // countrySelectedMulti: CountryModel[] = [];
+    countrySelectedMulti: CountryModel[] = [];
+    convictionSelectedMulti: ConvictionModel[] = [];
+    maxSelections = 1;
 
     rowsPerPageOptions = [5, 10, 20];
 
-    constructor(private productService: ProductService, private messageService: MessageService) { }
+    constructor(private productService: ProductService,
+                private messageService: MessageService,
+                private router: Router,
+                private killerService : KillersService,
+                private  countryService: CountryService,
+                private convictionService: ConvictionsService) { }
 
     ngOnInit() {
-        this.productService.getProducts().then(data => this.products = data);
-
-        this.cols = [
-            { field: 'product', header: 'Product' },
-            { field: 'price', header: 'Price' },
-            { field: 'category', header: 'Category' },
-            { field: 'rating', header: 'Reviews' },
-            { field: 'inventoryStatus', header: 'Status' }
-        ];
-
-        this.statuses = [
-            { label: 'INSTOCK', value: 'instock' },
-            { label: 'LOWSTOCK', value: 'lowstock' },
-            { label: 'OUTOFSTOCK', value: 'outofstock' }
-        ];
+        this.loadAll();
     }
 
     openNew() {
-        this.product = {};
+        this.killer = {};
+        this.countrySelectedMulti = [];
+        this.convictionSelectedMulti = [];
         this.submitted = false;
-        this.productDialog = true;
+        this.loadCountries();
+        this.loadConvictions();
+        this.formDialog = true;
     }
 
-    deleteSelectedProducts() {
-        this.deleteProductsDialog = true;
+    // edit(killer: KillerModel) {
+    //     this.killer = { ...killer };
+    //     this.loadCountries();
+    //     this.loadConvictions();
+    //     // this.countrySelectedMulti[0] = this.countriesList.find(e => this.killer.country )
+    //     this.countrySelectedMulti = [this.countriesList.find(c => c.label == this.killer.nationality)]
+    //     this.convictionSelectedMulti = this.convictionsList.filter(conviction => this.killer.convicted.includes(conviction.label));
+    //     console.log(this.convictionSelectedMulti)
+    //
+    //     this.formDialog = true;
+    // }
+
+    edit(killer: KillerModel) {
+        this.killer = { ...killer };
+
+        // Charger les pays et les convictions
+        forkJoin({
+            countries: this.countryService.getAllCountries(),
+            convictions: this.convictionService.getAllConvictions()
+        }).subscribe(({ countries, convictions }) => {
+            this.countriesList = countries;
+            this.convictionsList = convictions;
+
+            // Maintenant que les données sont chargées, vous pouvez effectuer les sélections
+            this.countrySelectedMulti = [this.countriesList.find(c => c.label === this.killer.nationality)];
+            this.convictionSelectedMulti = this.convictionsList.filter(conviction => this.killer.convicted.includes(conviction.label));
+
+
+            // Ouvrir le formulaire de dialogue
+            this.formDialog = true;
+        });
     }
 
-    editProduct(product: Product) {
-        this.product = { ...product };
-        this.productDialog = true;
-    }
-
-    deleteProduct(product: Product) {
-        this.deleteProductDialog = true;
-        this.product = { ...product };
-    }
-
-    confirmDeleteSelected() {
-        this.deleteProductsDialog = false;
-        this.products = this.products.filter(val => !this.selectedProducts.includes(val));
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-        this.selectedProducts = [];
-    }
-
-    confirmDelete() {
-        this.deleteProductDialog = false;
-        this.products = this.products.filter(val => val.id !== this.product.id);
-        this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-        this.product = {};
-    }
 
     hideDialog() {
-        this.productDialog = false;
+        this.formDialog = false;
         this.submitted = false;
     }
 
     saveProduct() {
+        let country = this.extractId(this.countrySelectedMulti);
+        let convictions = this.extractId(this.convictionSelectedMulti);
+        this.killer.country = country[0];
+        // @ts-ignore
+        this.killer.convicted = convictions;
+        console.log(this.killer);
         this.submitted = true;
 
-        if (this.product.name?.trim()) {
-            if (this.product.id) {
-                // @ts-ignore
-                this.product.inventoryStatus = this.product.inventoryStatus.value ? this.product.inventoryStatus.value : this.product.inventoryStatus;
-                this.products[this.findIndexById(this.product.id)] = this.product;
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-            } else {
-                this.product.id = this.createId();
-                this.product.code = this.createId();
-                this.product.image = 'product-placeholder.svg';
-                // @ts-ignore
-                this.product.inventoryStatus = this.product.inventoryStatus ? this.product.inventoryStatus.value : 'INSTOCK';
-                this.products.push(this.product);
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-            }
+        if (this.killer.id) {
+            // updated
+            this.killerService.updateKiller(this.killer).subscribe(
+                (res) => {
+                    console.log(res);
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Successful',
+                        detail: '1 ligne a été mise à jour.',
+                        life: 3000
+                    });
+                    this.loadAll();  // Recharger les données après mise à jour
+                },
+                (err) => {
+                    console.error(err);
+                }
+            );
+        } else {
+            // created
+            this.killerService.createKiller(this.killer).subscribe(
+                (res) => {
+                    console.log(res);
+                    this.messageService.add({
+                        severity: 'success',
+                        summary: 'Successful',
+                        detail: '1 ligne nouvelle a été créée.',
+                        life: 3000
+                    });
+                    this.loadAll();  // Recharger les données après création
+                },
+                (err) => {
+                    console.error(err);
+                }
+            );
+        }
+        this.formDialog = false;
+        this.killer = {};
+        this.countrySelectedMulti = [];
+        this.convictionSelectedMulti = [];
+        // this.loadAll();  // Optionnel, selon où vous souhaitez appeler cette méthode
+    }
 
-            this.products = [...this.products];
-            this.productDialog = false;
-            this.product = {};
+
+
+    onSelectionChange(event) {
+        if (this.countrySelectedMulti.length > this.maxSelections) {
+            this.countrySelectedMulti.pop();
+            alert(`Vous pouvez sélectionner jusqu'à ${this.maxSelections} nationalités.`);
         }
     }
 
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.products.length; i++) {
-            if (this.products[i].id === id) {
-                index = i;
-                break;
-            }
+    extractId(objects: any[]): string[] {
+        if (!Array.isArray(objects)) {
+            throw new Error("L'entrée doit être un tableau");
         }
-
-        return index;
+        return objects.map(object => object.id);
     }
 
-    createId(): string {
-        let id = '';
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (let i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
+    delete(killer: KillerModel) {
+        this.deleteDialog = true;
+        this.killer = { ...killer };
+    }
+
+    confirmDelete() {
+        this.deleteDialog = false;
+        this.killerService.deleteKiller(this.killer.id).subscribe(
+            (res) => {
+                console.log(res)
+                this.loadAll();
+                this.messageService.add({ severity: 'success', summary: 'Successful', detail: '1 ligne supprimée', life: 3000 });
+            }
+        )
+        this.killer = {};
+    }
+
+    loadAll(){
+        this.killerService.getAllKillers().subscribe(
+            (res) => {
+                console.log(res)
+                this.killersList = res
+            }
+        )
+    }
+
+    loadCountries(){
+        this.countryService.getAllCountries().subscribe(
+            (res) => {
+                console.log(res)
+                this.countriesList = res
+            }
+        )
+    }
+
+    loadConvictions(){
+        this.convictionService.getAllConvictions().subscribe(
+            (res) => {
+                console.log(res)
+                this.convictionsList = res
+            }
+        )
     }
 
     onGlobalFilter(table: Table, event: Event) {
         table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+    }
+
+    showNodeGhaph(killer: KillerModel){
+        // console.log(student.matricule)
+        this.router.navigate(['graph/node/', killer.id])
     }
 }

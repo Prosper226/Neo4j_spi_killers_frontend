@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-    api : 'https://3ac6-102-180-20-142.ngrok-free.app/api'
+    api : 'https://2dd7-102-180-20-142.ngrok-free.app/api'
 };
 
 /*

@@ -1,24 +1,56 @@
+
 // network.component.ts
 import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { Network } from 'vis-network/standalone/esm/vis-network';
 import {HttpClient} from "@angular/common/http";
-import {environment} from "../../../../../../environments/environment";
+import {environment} from "../../../../../environments/environment";
+import {ActivatedRoute} from "@angular/router";
+import {Subscription} from "rxjs";
+
 
 
 @Component({
     selector: 'app-network',
-    templateUrl: './network.component.html',
+    templateUrl: './graph.component.html',
     standalone: true,
-    styleUrls: ['./network.component.css']
+    styleUrls: ['./graph.component.css']
 })
-export class NetworkComponent implements OnInit {
+export class GraphComponent implements OnInit {
     @ViewChild('networkContainer', { static: true }) networkContainer: ElementRef;
 
-    constructor(private http: HttpClient) {}
+    graphUrl?: string
+    private routeSub: Subscription;
+    constructor(private http: HttpClient, private activatedRoute: ActivatedRoute) {}
 
     ngOnInit(): void {
-        // this.sampleGraph()
-        this.loadNetworkData('/graph/killers-continents');
+        // const typeGraph: string | null = this.activatedRoute.snapshot.paramMap.get('typeGraph');
+        // const nodeId: string | null = this.activatedRoute.snapshot.paramMap.get('nodeId');
+        // if(typeGraph){
+        //     console.log(typeGraph)
+        //     this.graphUrl = `/graph/${typeGraph}`;
+        // }else{
+        //     console.log(nodeId)
+        //     this.graphUrl = `/graph/node/${nodeId}`;
+        // }
+        // // this.sampleGraph()
+        // this.loadNetworkData(this.graphUrl);
+        // this.graphUrl = null;
+
+
+        this.routeSub = this.activatedRoute.paramMap.subscribe(params => {
+            const typeGraph = params.get('typeGraph');
+            const nodeId = params.get('nodeId');
+            if (typeGraph) {
+                this.graphUrl = `/graph/${typeGraph}`;
+            } else if (nodeId) {
+                this.graphUrl = `/graph/node/${nodeId}`;
+            }
+
+            if (this.graphUrl) {
+                this.loadNetworkData(this.graphUrl);
+            }
+        });
+
     }
 
     loadNetworkData(endpoint: string): void {
