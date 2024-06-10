@@ -22,6 +22,7 @@
                         <th pSortableColumn="label">Label <p-sortIcon field="label"></p-sortIcon></th>
                         <th pSortableColumn="area">Superficie <p-sortIcon field="area"></p-sortIcon></th>
                         <th pSortableColumn="uri">URI <p-sortIcon field="uri"></p-sortIcon></th>
+                        <th></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-continent>
@@ -40,6 +41,11 @@
                         <td style="width:14%; min-width:10rem;">
                             <span class="p-column-title">URI</span>
                             {{continent.uri}}
+                        </td>
+                        <td  style="width:14%; min-width:10rem;">
+                            <div class="flex">
+                                <button pButton pRipple icon="pi pi-share-alt" class="p-button-rounded p-button-primary" (click)="showNodeGhaph(continent)"></button>
+                            </div>
                         </td>
                     </tr>
                 </ng-template>

@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
         { path: 'convictions', loadChildren: () => import('./convictions/convictions.module').then(m => m.ConvictionsModule) },
         { path: 'continents', loadChildren: () => import('./continents/continents.module').then(m => m.ContinentsModule) },
         { path: 'countries', loadChildren: () => import('./countries/countries.module').then(m => m.CountriesModule) },
+        { path: 'graph', loadChildren: () => import('./graph/graph.module').then(m => m.GraphModule) },
        // { path: '**', redirectTo: '/landing' }
     ])],
     exports: [RouterModule]
