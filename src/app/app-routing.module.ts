@@ -1,28 +1,19 @@
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { NotfoundComponent } from './demo/components/notfound/notfound.component';
 import { AppLayoutComponent } from "./layout/app.layout.component";
+import {LandingComponent} from "./demo/components/landing/landing.component";
 
 @NgModule({
     imports: [
         RouterModule.forRoot([
-            {
-                path: '', component: AppLayoutComponent,
-                children: [
-                    { path: '', loadChildren: () => import('./demo/components//pages/pages.module').then(m => m.PagesModule) },
-                    // { path: '', loadChildren: () => import('./demo/components/dashboard/dashboard.module').then(m => m.DashboardModule) },
-                    // { path: 'uikit', loadChildren: () => import('./demo/components/uikit/uikit.module').then(m => m.UIkitModule) },
-                    // { path: 'utilities', loadChildren: () => import('./demo/components/utilities/utilities.module').then(m => m.UtilitiesModule) },
-                    // { path: 'documentation', loadChildren: () => import('./demo/components/documentation/documentation.module').then(m => m.DocumentationModule) },
-                    // { path: 'blocks', loadChildren: () => import('./demo/components/primeblocks/primeblocks.module').then(m => m.PrimeBlocksModule) },
-                    // { path: 'pages', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) },
-                    // { path: 'spi', loadChildren: () => import('./demo/components/pages/pages.module').then(m => m.PagesModule) },
-                ]
-            },
-            // { path: 'auth', loadChildren: () => import('./demo/components/auth/auth.module').then(m => m.AuthModule) },
-            { path: 'landing', loadChildren: () => import('./demo/components/landing/landing.module').then(m => m.LandingModule) },
-            // { path: 'notfound', component: NotfoundComponent },
-            { path: '**', redirectTo: '/landing' },
+            { path: '', component: LandingComponent, loadChildren: () => import('./demo/components/landing/landing.module').then(m => m.LandingModule)},
+            { path: 'killers', component: AppLayoutComponent, loadChildren: () => import('./demo/components/pages/killers/killers.module').then(m => m.KillersModule)},
+            { path: 'victims', component: AppLayoutComponent, loadChildren: () => import('./demo/components/pages/victims/victims.module').then(m => m.VictimsModule) },
+            { path: 'convictions', component: AppLayoutComponent, loadChildren: () => import('./demo/components/pages/convictions/convictions.module').then(m => m.ConvictionsModule) },
+            { path: 'continents', component: AppLayoutComponent, loadChildren: () => import('./demo/components/pages/continents/continents.module').then(m => m.ContinentsModule) },
+            { path: 'countries', component: AppLayoutComponent, loadChildren: () => import('./demo/components/pages/countries/countries.module').then(m => m.CountriesModule) },
+            { path: 'graph', component: AppLayoutComponent, loadChildren: () => import('./demo/components/pages/graph/graph.module').then(m => m.GraphModule) },
+            { path: '**', redirectTo: '/' },
         ], { scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled', onSameUrlNavigation: 'reload' })
     ],
     exports: [RouterModule]

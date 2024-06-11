@@ -15,6 +15,14 @@ export class KillersService {
         return this.http.get<KillerModel[]>(`${this.resourceUrl}/killers`);
     }
 
+    getAllKillersForHome(): Observable<KillerModel[]> {
+        return this.http.get<KillerModel[]>(`${this.resourceUrl}/killers/with-photos`);
+    }
+
+    getKillerById(id: string): Observable<any> {
+        return this.http.get<KillerModel>(`${this.resourceUrl}/killers/${id}`);
+    }
+
     deleteKiller(killerId?: string): Observable<void> {
         return this.http.delete<void>(`${this.resourceUrl}/killers/${killerId}`);
     }

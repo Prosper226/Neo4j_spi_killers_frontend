@@ -11,5 +11,6 @@ export interface KillerModel {
     victimsOfKiller?: number;
     workPeriodStart?: string;
     workPeriodEnd?: string;
-    convicted?: [string]
+    convicted?: [string],
+    summary?: string
 }
